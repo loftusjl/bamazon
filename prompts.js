@@ -1,4 +1,12 @@
 const inquirer = require('inquirer');
+const mysql = require('mysql');
+const connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: 'blanket',
+    port: 3306,
+    database: 'bamazon'
+});
 
 let prompts = {
     order: function(choices) {
@@ -15,7 +23,19 @@ let prompts = {
             prodRestock(answers)
             prodOnHand(answers)
         });
-    }
+    },
+    prodName: function () { // generate array of products for use in prompt selections
+        connection.query('select prodName from products;', function (error, results, fields) {
+            if (error) {
+                console.log(error)
+                throw error;
+            } else {
+                let prodArray = [];
+                prodArray = results.map(a => a.prodName);
+                prompts.order(prodArray);
+            }
+        });
+    },
 }
 
 
