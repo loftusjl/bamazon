@@ -37,6 +37,44 @@ let prompts = {
             }
         });
     },
+    manCommand: function () {
+        inquirer.prompt([{
+            type: 'list',
+            message: 'Please choose what you would like to do: \r\n',
+            choices: ['Show all products', 'Show Low Inventories', 'Restock Inventory', 'Add New Product'],
+            name: 'command'
+        }]).then(answers => {
+            switch (answers.command) {
+                case 'Show Low Inventories':
+                    logo();
+                    inquirer.prompt([{
+                        type: 'input',
+                        message: 'List inventories with less than how many on-hand?',
+                        name: 'lowInventory'
+                    }]).then(ans => {
+                        inventoryTXN.dispInventory(ans.lowInventory);
+                    })
+                    break;
+                case 'Restock Inventory':
+                    logo();
+                    inquirer.prompt([
+                        {
+                            type:
+                        }
+                    ])
+                    inventoryTXN.restock();
+                    break;
+                case 'Add New Product':
+                    logo();
+                    departmentInventory();
+                    break;
+                default:
+                    logo();
+                    inventoryTXN.dispInventory();
+                    break;
+            }
+        });
+    },
     orderPrompt: function (choices) {
         logo();
         inquirer.prompt([{
@@ -54,6 +92,8 @@ let prompts = {
         });
     },
     orderItem: function () { // generate array of products for use in ordering
+        // ! remove prompts.orderPrompt(prodArray). Instead return prodArray
+        // ! let other functions call this for the array.
         connection.query('select prodName from products;', function (error, results, fields) {
             if (error) {
                 console.log(error)
