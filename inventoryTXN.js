@@ -38,8 +38,8 @@ let inventoryTXN = {
         })
         connection.end();
     },
-    addProduct: function (product, price, qty) {
-        connection.query(`INSERT INTO products (prodName, prodPrice, prodQuantity) VALUES ("${product}",${price},${qty})`)
+    addProduct: function (product, price, qty, department) { // Add a new product to the database
+        connection.query(`INSERT INTO products (prodName, prodPrice, prodQuantity, IDdep) VALUES ("${product}",${price},${qty}, ${department})`)
         console.log(`${product} added.\r\n`)
         inventoryTXN.onHand(product);
         connection.end();
@@ -67,7 +67,7 @@ let inventoryTXN = {
             } else {
                 const prodTable = cTable.getTable(results);
                 logo();
-                console.log(`\r\nProduct Inventory:\r\n${prodTable}`);
+                console.log(`\r\n${prodTable}`);
             };
         });
         connection.end();

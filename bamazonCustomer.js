@@ -11,13 +11,23 @@ const connection = mysql.createConnection({
     port: 3306,
     database: 'bamazon'
 });
+const options = {
+    font: 'chrome', // define the font face
+    align: 'center', // define text alignment
+    colors: ['gray','green','blue'], // define all colors
+    background: 'transparent', // define the background color, you can also use `backgroundColor` here as key
+    letterSpacing: 1, // define letter spacing
+    lineHeight: 1, // define the line height
+    space: false, // define if the output text should have empty lines on top and on the bottom
+    maxLength: '0', // define how many character can be on one line
+}
 
 let prompts = {
     selectCommand: function () {
         inquirer.prompt([{
             type: 'list',
             message: 'Please choose what you would like to do: \r\n',
-            choices: ['Order a product', 'Show all products', 'Filter products by Department'],
+            choices: ['Order a product', 'Show all products', 'Show Department Products'],
             name: 'command'
         }]).then(answers => {
             switch (answers.command) {
@@ -25,7 +35,7 @@ let prompts = {
                     logo();
                     prompts.orderItem();
                     break;
-                case 'Filter products by Department':
+                case 'Show Department Products':
                     logo();
                     departmentInventory();
                     break;
@@ -79,16 +89,7 @@ function departmentInventory() {
         name: 'department'
     }]).then(dep => {
         logo();
-        let options = {
-            font: 'chrome', // define the font face
-            align: 'center', // define text alignment
-            colors: ['gray','green','blue'], // define all colors
-            background: 'transparent', // define the background color, you can also use `backgroundColor` here as key
-            letterSpacing: 1, // define letter spacing
-            lineHeight: 1, // define the line height
-            space: false, // define if the output text should have empty lines on top and on the bottom
-            maxLength: '0', // define how many character can be on one line
-        }
+        
         CFonts.say(`${dep.department} Department`,options)
         CFonts.say(`Inventory`,options)
         connection.query(`SELECT prodID, prodName AS "Product Name", concat("$", format(prodPrice,2)) AS "Unit Price", prodQuantity AS Qty FROM products INNER JOIN departments ON products.IDdep = departments.depID WHERE depName = "${dep.department}"`, function (error, results) {
