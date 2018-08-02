@@ -24,8 +24,7 @@ let inventoryTXN = {
                 console.log(`\r\n**Insufficient Stock**\r\n`);
                 inventoryTXN.onHand(product);
             }
-        })
-        connection.end();
+        });
     },
     restock: function (product, qty) { // add passed in qty to specified product
         connection.query(`SELECT prodQuantity, prodPrice FROM products WHERE prodName = "${product}"`, function (err, ans) {
@@ -53,7 +52,7 @@ let inventoryTXN = {
                 const prodTable = cTable.getTable(results);
                 console.log(`${prodTable}`);
             }
-        })
+        });
     },
     dispInventory: function (a) { // list inventory. add Int to argument for inventory of items with less than listed qty on-hand
         let inventory = `select prodID, prodName AS "Product Name", depName AS "Department Name", concat("$", format(prodPrice,2)) AS "Unit Price", prodQuantity AS Qty from products INNER JOIN departments ON IDdep = depID`;
@@ -72,16 +71,6 @@ let inventoryTXN = {
         });
         connection.end();
     },
-    connectDB: function () { // connect to database listed in connection parameters
-        connection.connect(function (err) {
-            if (err) {
-                console.error('error connecting: ' + err.stack);
-                return;
-            }
-            logo();
-            // console.log('connected as id ' + connection.threadId);
-        });
-    }
 }
 
 module.exports = inventoryTXN;

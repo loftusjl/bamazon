@@ -1,8 +1,10 @@
 const inquirer = require('inquirer');
 const inventoryTXN = require('./inventoryTXN');
+const departmentInventory = require('./departmentInventory');
 const mysql = require('mysql');
 const clear = require('clear');
 const CFonts = require('cfonts');
+const logo = require('./logo');
 const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
@@ -10,49 +12,33 @@ const connection = mysql.createConnection({
     port: 3306,
     database: 'bamazon'
 });
-
-
 let prompts = {
     selectCommand: function () {
-        prompts.logo();
         inquirer.prompt([{
             type: 'list',
             message: 'Please choose what you would like to do: \r\n',
-            choices: ['Order a product', 'Show all products', 'Filter products by Department'],
+            choices: ['Order a product', 'Show all products', 'Show Department Products'],
             name: 'command'
         }]).then(answers => {
             switch (answers.command) {
                 case 'Order a product':
-                    prompts.logo();
+                    logo();
                     prompts.orderItem();
                     break;
-                case 'Filter products by Department':
-                    prompts.logo();
-                    inventoryTXN.dispInventory();
+                case 'Show Department Products':
+                    logo();
+                    departmentInventory();
                     break;
-            
+
                 default:
-                    prompts.logo();
+                    logo();
                     inventoryTXN.dispInventory();
                     break;
-            }       
-        });
-    },
-    logo: function () {
-        clear();
-        CFonts.say('Bamazon', {
-            font: 'block', // define the font face
-            align: 'center', // define text alignment
-            colors: ['system'], // define all colors
-            background: 'transparent', // define the background color, you can also use `backgroundColor` here as key
-            letterSpacing: 1, // define letter spacing
-            lineHeight: 1, // define the line height
-            space: true, // define if the output text should have empty lines on top and on the bottom
-            maxLength: '0', // define how many character can be on one line
+            }
         });
     },
     orderPrompt: function (choices) {
-        prompts.logo();
+        logo();
         inquirer.prompt([{
             type: 'list',
             choices: choices,
@@ -80,3 +66,5 @@ let prompts = {
         });
     },
 }
+
+module.exports = prompts;
