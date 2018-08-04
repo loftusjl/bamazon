@@ -1,6 +1,6 @@
 # Bamazon Node App
 
-This is a command line tool for managing a fake store "Bamazon"
+An Amazon-like storefront using MySQL, NodeJS, and Javascript. The app takes in orders from customers and depletes stock from the store's inventory. It will also track product sales across store departments and then provide a summary of the highest-grossing departments in the store along with various other functions.
 
 ## Getting Started
 
