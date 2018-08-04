@@ -1,6 +1,6 @@
 const inquirer = require('inquirer');
 const supProductSales = require('./supProductSales');
-const inventoryTXN = require('./inventoryTXN');
+const supCreateDepartment = require('./supCreateDepartment');
 const logo = require('./logo');
 
 logo(); // clear terminal and display logo
@@ -16,20 +16,23 @@ function supCommand() {
         switch (answers.command) {
             case 'Create New Department':
                 logo();
-
+                inquirer.prompt([
+                    {
+                        type: 'input',
+                        message:'What is the new Department name?',
+                        name: 'dep',
+                    },{
+                        type: 'input',
+                        message:'What is the overhead cost? $',
+                        name: 'overhead'
+                    }
+                ]).then(answers => {
+                    supCreateDepartment(answers.dep, answers.overhead);
+                })
                 break;
             
             default:
-                logo(); //! build department list generator
-                // inquirer.prompt([
-                //     {
-                //         type: 'list',
-                //         message: 'Select desired Department',
-                //         choices: ['Ankle Spice', 'Salty Eats', 'Terrible Treats', 'Industrial Nutrition', 'Lyrical Grapefruit'],
-                //         name: 'department'
-                //     }
-                // ]).then(answers => {
-                // })
+                logo();
                 supProductSales();
                 break;
         }

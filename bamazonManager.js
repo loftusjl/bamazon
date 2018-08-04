@@ -46,7 +46,6 @@ function manCommand() {
                 }]).then(ans => {
                     inventoryTXN.dispInventory(ans.lowInventory);
                 })
-                inventoryTXN.endConnection();
                 break;
             case 'Restock Inventory':
                 logo();
