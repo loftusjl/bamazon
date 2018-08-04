@@ -10,39 +10,6 @@ const connection = mysql.createConnection({
 });
 
 let inventoryTXN = {
-    buy: function (product, qty) { // subtract passed in qty from specified product
-        connection.query(`SELECT prodQuantity, prodPrice FROM products WHERE prodName = "${product}"`, function (err, ans) {
-            let tempQty = ans[0].prodQuantity;
-            let totalSale = ans[0].prodPrice * qty;
-            if (qty < tempQty) {
-                connection.query('UPDATE products\r\nSET prodQuantity = prodQuantity - ' + qty + '\r\nWHERE prodName = "' + product + '";')
-                connection.query('UPDATE products\r\nSET prodSales = prodsales + ' + totalSale + '\r\nWHERE prodName = "' + product + '";')
-                logo();
-                console.log(`\r\nPurchase Order Summary: ${product}, ${qty}ea.\r\nTotal Cost: $${totalSale.toFixed(2)}\r\n`)
-            } else {
-                logo();
-                console.log(`\r\n**Insufficient Stock**\r\n`);
-                inventoryTXN.onHand(product);
-            }
-        });
-    },
-    restock: function (product, qty) { // add passed in qty to specified product
-        connection.query(`SELECT prodQuantity, prodPrice FROM products WHERE prodName = "${product}"`, function (err, ans) {
-            if (qty > 0) {
-                connection.query('UPDATE products\r\nSET prodQuantity = prodQuantity + ' + parseInt(qty) + '\r\nWHERE prodName = "' + product + '";')
-                inventoryTXN.onHand(product);
-            } else {
-                console.log(`\r\n**Quantity must be greater than 0 **\r\n`);
-            }
-        })
-        connection.end();
-    },
-    addProduct: function (product, price, qty, department) { // Add a new product to the database
-        connection.query(`INSERT INTO products (prodName, prodPrice, prodQuantity, IDdep) VALUES ("${product}",${price},${qty}, ${department})`)
-        console.log(`${product} added.\r\n`)
-        inventoryTXN.onHand(product);
-        connection.end();
-    },
     onHand: function (prod) { // list single product and onHand inventory
         connection.query('select prodQuantity AS "On Hand Inventory"\r\nfrom products\r\nwhere prodName = "' + prod + '"', function (error, results) {
             if (error) {
@@ -69,8 +36,12 @@ let inventoryTXN = {
                 console.log(`\r\n${prodTable}`);
             };
         });
-        connection.end();
     },
+    endConnection: function() {
+        setTimeout(() => {
+            connection.end();
+        }, 3000);
+    }
 }
 
 module.exports = inventoryTXN;
